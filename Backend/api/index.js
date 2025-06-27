@@ -40,9 +40,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Serverless export for Vercel
-const handler = serverless(app);
-
 // Start local server if not in serverless (e.g., dev mode)
 if (process.env.NODE_ENV !== 'production') {
   connectDB().then(() => {
@@ -52,4 +49,4 @@ if (process.env.NODE_ENV !== 'production') {
   connectDB(); // Vercel will invoke the handler
 }
 
-module.exports = { handler, app };
+module.exports = serverless(app);
