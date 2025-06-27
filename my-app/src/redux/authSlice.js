@@ -5,11 +5,10 @@ const token = localStorage.getItem('token');
 
 export const register = createAsyncThunk('auth/register', async (data, { rejectWithValue }) => {
   try {
-    const res = await axios.post('https://to-do-task2-a8ew.vercel.app/api/auth/register', data);
+    const res = await axios.post('http://localhost:5000/api/auth/register', data);
     localStorage.setItem('token', res.data.token);
-    console.log("Registration successful:", res.data);
     return res.data.token;
-
+    
   } catch (err) {
     return rejectWithValue(err.response.data.error);
   }
@@ -17,7 +16,7 @@ export const register = createAsyncThunk('auth/register', async (data, { rejectW
 
 export const login = createAsyncThunk('auth/login', async (data, { rejectWithValue }) => {
   try {
-    const res = await axios.post('https://to-do-task2-a8ew.vercel.app/api/auth/login', data);
+    const res = await axios.post('http://localhost:5000/api/auth/login', data);
     localStorage.setItem('token', res.data.token);
     return res.data.token;
   } catch (err) {

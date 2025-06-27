@@ -32,7 +32,7 @@ export const updateTask = createAsyncThunk('tasks/update', async ({ id, data }, 
 
 export const deleteTask = createAsyncThunk('tasks/delete', async (id, { rejectWithValue }) => {
   try {
-    await axios.delete(`https://to-do-task2-a8ew.vercel.app/api/tasks/${id}`, authHeader());
+    await axios.delete(`http://localhost:5000/api/tasks/${id}`, authHeader());
     return id;
   } catch (err) {
     return rejectWithValue(err.response.data.error);
@@ -41,7 +41,7 @@ export const deleteTask = createAsyncThunk('tasks/delete', async (id, { rejectWi
 
 const taskSlice = createSlice({
   name: 'tasks',
-  initialState: { tasks: [], total: 0, error: null },
+  initialState: { tasks: [], error: null },
   reducers: {},
   extraReducers: (builder) => {
     builder

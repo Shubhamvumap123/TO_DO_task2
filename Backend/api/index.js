@@ -22,6 +22,6 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ error: err.message || 'Server Error' });
 });
 // comment for vercel deployment 
-// app.listen(5000, () => console.log('Server running on port 5000'));
+app.listen(5000, () => console.log('Server running on port 5000'));
 
 module.exports = serverless(app);
