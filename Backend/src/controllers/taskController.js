@@ -10,6 +10,7 @@ exports.createTask = async (req, res, next) => {
 };
 
 exports.getTasks = async (req, res, next) => {
+  console.log(req.user)
   try {
     const { page = 1, status, name, date } = req.query;
     const query = { user: req.user.id };
