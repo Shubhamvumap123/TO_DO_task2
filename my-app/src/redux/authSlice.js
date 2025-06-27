@@ -7,7 +7,9 @@ export const register = createAsyncThunk('auth/register', async (data, { rejectW
   try {
     const res = await axios.post('http://localhost:5000/api/auth/register', data);
     localStorage.setItem('token', res.data.token);
+    console.log("Registration successful:", res.data);
     return res.data.token;
+
   } catch (err) {
     return rejectWithValue(err.response.data.error);
   }
