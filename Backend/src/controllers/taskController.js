@@ -18,8 +18,8 @@ exports.getTasks = async (req, res, next) => {
     if (name) query.name = { $regex: name, $options: 'i' };
     if (date) query.date = { $gte: new Date(date) };
     const tasks = await Task.find(query)
-      .skip((page - 1) * 10)
-      .limit(10);
+      .skip((page - 1) * 5)
+      .limit(5);
     res.json(tasks);
   } catch (err) {
     next(err);
