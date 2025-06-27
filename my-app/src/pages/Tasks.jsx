@@ -9,10 +9,12 @@ export default function Tasks() {
   const dispatch = useDispatch();
   const { tasks, error } = useSelector(state => state.tasks);
   const [query, setQuery] = useState({ page: 1, status: '', name: '', date: '' });
+
   const [form, setForm] = useState(() => {
     const saved = localStorage.getItem('draft');
-    return saved ? JSON.parse(saved) : { name: '', description: '', priority: 'Medium' };
+    return saved ? JSON.parse(saved) : { name: '', description: '' };
   });
+
   const [sortBy, setSortBy] = useState('latest');
   const [dark, setDark] = useState(() => localStorage.getItem('theme') === 'dark');
   const [deletedTask, setDeletedTask] = useState(null);
@@ -41,9 +43,12 @@ export default function Tasks() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const handleCreate = (e) => {
+  const handleCreate = async (e) => {
     e.preventDefault();
-    dispatch(createTask(form)).then(() => setForm({ name: '', description: '', priority: 'Medium' }));
+    const result = await dispatch(createTask(form));
+    if (!result.error) {
+      setForm({ name: '', description: '' });
+    }
   };
 
   const sortedTasks = [...(tasks || [])].sort((a, b) => {
@@ -61,12 +66,17 @@ export default function Tasks() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-6">
       <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 space-y-6">
+
         {/* Header */}
         <div className="flex items-center justify-between border-b pb-4">
           <h1 className="text-3xl font-bold">📝 My Tasks</h1>
           <div className="space-x-2">
-            <button onClick={() => setDark(!dark)} className="text-sm bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded">{dark ? '🌞 Light' : '🌙 Dark'}</button>
-            <button onClick={() => dispatch(logout())} className="text-sm bg-red-100 text-red-600 hover:bg-red-200 transition-all px-4 py-2 rounded-md font-medium">Logout</button>
+            <button onClick={() => setDark(!dark)} className="text-sm bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded">
+              {dark ? '🌞 Light' : '🌙 Dark'}
+            </button>
+            <button onClick={() => dispatch(logout())} className="text-sm bg-red-100 text-red-600 hover:bg-red-200 transition-all px-4 py-2 rounded-md font-medium">
+              Logout
+            </button>
           </div>
         </div>
 
@@ -81,22 +91,37 @@ export default function Tasks() {
 
         {/* Create Form */}
         <form onSubmit={handleCreate} className="space-y-3">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Task Name" className="p-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none" required />
-            <input value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Description" className="p-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none" />
-            <select value={form.priority} onChange={e => setForm({ ...form, priority: e.target.value })} className="p-3 border border-gray-300 dark:border-gray-600 rounded-xl">
-              <option>Low</option>
-              <option>Medium</option>
-              <option>High</option>
-            </select>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <input
+              value={form.name}
+              onChange={e => setForm({ ...form, name: e.target.value })}
+              placeholder="Task Name"
+              className="p-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none placeholder-gray-500 dark:placeholder-gray-400"
+              required
+            />
+            <input
+              value={form.description}
+              onChange={e => setForm({ ...form, description: e.target.value })}
+              placeholder="Description"
+              className="p-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none placeholder-gray-500 dark:placeholder-gray-400"
+            />
           </div>
           <button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 transition text-white font-semibold px-6 py-3 rounded-xl shadow">➕ Add Task</button>
         </form>
 
         {/* Filters */}
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-          <input id="searchInput" placeholder="🔍 Search by name" className="p-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none" onChange={e => setQuery({ ...query, name: e.target.value, page: 1 })} />
-          <input type="date" className="p-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none" onChange={e => setQuery({ ...query, date: e.target.value, page: 1 })} />
+          <input
+            id="searchInput"
+            placeholder="🔍 Search by name"
+            className="p-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none placeholder-gray-500 dark:placeholder-gray-400"
+            onChange={e => setQuery({ ...query, name: e.target.value, page: 1 })}
+          />
+          <input
+            type="date"
+            className="p-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            onChange={e => setQuery({ ...query, date: e.target.value, page: 1 })}
+          />
           <select className="p-3 border border-gray-300 dark:border-gray-600 rounded-xl" onChange={e => setQuery({ ...query, status: e.target.value, page: 1 })}>
             <option value="">All Statuses</option>
             <option value="PENDING">⏳ Pending</option>
