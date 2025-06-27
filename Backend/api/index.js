@@ -1,8 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const authRoutes = require('./routes/authRoutes');
-const taskRoutes = require('./routes/taskRoutes');
+const authRoutes = require('../src/routes/authRoutes');
+const taskRoutes = require('../src/routes/taskRoutes');
+const serverless = require('serverless-http');
 require('dotenv').config();
 
 const app = express();
@@ -22,3 +23,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(5000, () => console.log('Server running on port 5000'));
+
+module.exports.handler = serverless(app);
